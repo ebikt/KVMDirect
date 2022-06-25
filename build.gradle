@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'application'
+    id "com.github.harbby.gradle.serviceloader" version "1.1.8"
+    id 'eclipse'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.json:json:20220320'
+    implementation 'org.jdom:jdom2:2.0.6.1'
+    implementation 'org.jsoup:jsoup:1.15.1'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+// unpack200 does not work, needs original unpack200 binary :(
+//    implementation 'org.apache.commons:commons-compress:1.21'
+//    implementation 'commons-io:commons-io:2.11.0'
+}
+
+application {
+    mainClass.set(project.mainClassName)
+}
+
+serviceLoader {
+  serviceInterface 'ebik.kvm.module.KVM'
+  serviceInterface 'ebik.kvm.queries.Engine'
+  serviceInterface 'org.apache.commons.logging.LogFactory'
+}
+
+jar {
+    manifest {
+	attributes(
+	    'Implementation-Title':   project.name,
+	    'Implementation-Version': project.version,
+	    'Main-Class':             project.mainClassName
+	)
+    }
+}
+
+task fatJar(type: Jar) {
+    dependsOn serviceLoaderBuild
+    manifest {
+	attributes(
+	    'Implementation-Title':   project.name,
+	    'Implementation-Version': project.version,
+	    'Main-Class':             project.mainClassName
+	)
+    }
+    baseName = 'KVMDirectFull'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

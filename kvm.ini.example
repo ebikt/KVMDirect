@@ -1,0 +1,103 @@
+[arguments.main.kvm]
+#Arguments may be set from ini file, mainly for testing purposes
+#host=ksicht-ttc
+#Run probe only
+#match=only
+
+[kvm.queries.01]
+result=custom.httpresult
+type=   post
+url= http://xml-rpc.examp.le/xml-rpc/
+content=<?xml version='1.0'?>{{NL}}\
+  <methodCall>\
+    <methodName>machineInfo</methodName>\
+    <params><param>\
+      <value><string>{{kvm.host}}</string></value>\
+    </param></params>\
+ </methodCall>
+
+[kvm.queries.02]
+result= custom.note
+type=   soap
+# see https://jsoup.org/cookbook/extracting-data/selector-syntax
+html=   {{ custom.machine }}
+query=  member:has(> name:containsWholeOwnText(note)) > value > string
+
+[kvm.queries.03]
+# '!' in queries.*.result means important: override settings from command-line
+result= !kvm.host
+type=   regex
+# Standard java.util.regex.Pattern ( https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html )
+text=   {{ custom.note }}
+regex=  (?i)(?:^|\\s)user(?:name)?\\s*[:=]\\s*(\\S+)
+
+[kvm.queries.04]
+result= kvm.user
+type=   regex
+text=   {{ custom.note }}
+regex=  (?i)(?:^|\\s)user(?:name)?\\s*[:=]\\s*(\\S+)
+
+[kvm.queries.05]
+result= kvm.password
+type=   regex
+text=   {{ custom.note }}
+regex=  (?i)(?:^|\\s)pass(?:word)?\\s*[:=]\\s*(\\S+)
+
+# === Default passwords by module ===
+[module.ilo.kvm]
+user=Administrator
+
+[module.sm.kvm]
+user=ADMIN
+password=ADMIN
+
+[module.ibm.kvm]
+
+[module.dell.kvm]
+
+# === Setup logging ===
+[default.system.org.apache.commons.logging]
+Log=org.apache.commons.logging.impl.SimpleLog
+simplelog.showdatetime=true
+
+[default.system.org.apache.commons.logging.simplelog.log]
+ebik=TRACE
+Main=TRACE
+
+#org.apache.http=TRACE
+
+org.apache.http=INFO
+org.apache.http.headers=DEBUG
+org.apache.http.wire=WARN
+ebik.kvm.queries=DEBUG
+
+#org.apache.http.impl.conn=DEBUG
+
+# ===== Recommended settings ======
+
+[default.kvm]
+keepFiles=false
+tempDir=./temp/
+
+# blacklist jar, that disables keystrokes in linux
+[module.ibm.M3.kvm]
+jnlp.blacklist=avctKVMIOLinux
+
+[module.ibm.M4.kvm]
+jnlp.blacklist=avctKVMIOLinux
+
+[module.dell.IDRAC8.kvm]
+jnlp.blacklist=avctKVMIOLinux
+
+# === Disable all SSL security ===
+[default.system.https]
+protocols=TLSv1.3,TLSv1.2,TLSv1.1,TLSv1,SSLv3,SSLv2Hello
+cipherSuites=UNSAFE-ALL
+
+[default.security.jdk]
+tls.disabledAlgorithms=
+certpath.disabledAlgorithms=
+
+[default.security.hack]
+trustAllHostnames=true
+trustAllHttpsCertificates=true

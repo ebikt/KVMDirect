@@ -1,0 +1,47 @@
+Some personal notes about what can be improved
+==============================================
+
+* Gui: try single jvm launching?
+* Gui: try toplevel frame slurping?
+
+* Applet: use downloader?
+
+* Jar: verify signatures/auto accept signatures?
+
+* standalone AppletViewer using Properties file?
+
+* GitHub releases? Proper java version selector?
+
+====
+  // Running JNLP without launching external
+  public class ExitPreventedException extends SecurityException {
+    protected int status = 0;
+    public ExitPreventedException setStatus(int code) {
+      status = code;
+      return this;
+    }
+    public int getStatus() { return status; }
+  }
+
+  public class PreventExitSecurityManager extends SecurityManager {
+    private SecurityManager parent;
+    PreventExitSecurityManager(SecurityManager _parent) {
+      parent = _parent;
+    }
+    PreventExitSecurityManager() {
+      this(System.getSecurityManager());
+    }
+    @Override
+    public void checkPermission(java.security.Permission perm) {
+      String name = perm.getName();
+      if (name.startsWith("exitVM.")) {
+	int code = -1;
+	try {
+	  code = Integer.parseInt(name.substring("exitVM.".length()));
+	} catch (Exception e) {}
+	throw new ExitPreventedException().setStatus(code);
+      }
+      parent.checkPermission(perm);
+    }
+  }
+

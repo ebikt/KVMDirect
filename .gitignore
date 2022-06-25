@@ -1,0 +1,8 @@
+.*.sw?
+.sw?
+/.gradle
+/build
+/dist
+/kvm.ini
+/StorageServer.Port
+/temp/
