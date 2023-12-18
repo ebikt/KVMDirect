@@ -15,7 +15,7 @@ case "$1" in
 
       #"$JAVA_HOME"/bin/java -cp "$( echo dist/KVMDirect/lib/*.jar | tr ' ' : )" ebik.kvm.KVMDirect "$@"
       #export JAVA_HOME=/usr/lib/jvm/java-19-openjdk-i386/
-      export JAVA_HOME=/usr/lib/jvm/java-19-openjdk-amd64/
+      export JAVA_HOME=/usr/lib/jvm/java-22-openjdk-amd64/
       "$JAVA_HOME"/bin/java -cp "$( echo dist/KVMDirect-$VERSION/lib/*.jar | tr ' ' : )" ebik.kvm.KVMDirect "$@"
       ;;
     ''|shadowRun)
@@ -23,7 +23,7 @@ case "$1" in
       shift || :
       ./gradlew fatJar
 
-      #export JAVA_HOME=/usr/lib/jvm/java-19-openjdk-amd64/
+      export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
       #"$JAVA_HOME"/bin/java -jar build/libs/KVMDirectFull.jar "$@"
       #FIXME get version
       java -jar build/libs/KVMDirectFull-$VERSION.jar "$@"
