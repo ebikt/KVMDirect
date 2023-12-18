@@ -20,7 +20,7 @@ public class Gui extends WindowAdapter implements ebik.kvm.module.Gui {
   protected KVM kvm = null;
   protected java.util.Vector<ebik.javaweb.PrivateDownloader> downloaders =
     new java.util.Vector<ebik.javaweb.PrivateDownloader>();
-  private Log log = LogFactory.getLog(Gui.class);
+  private static Log log = null;
 
   private static Gui gui = null;
 
@@ -37,6 +37,10 @@ public class Gui extends WindowAdapter implements ebik.kvm.module.Gui {
     main.pack();
     main.setVisible(true);
     addToplevelFrame(main);
+  }
+
+  public static void setLog() {
+    log = LogFactory.getLog(Gui.class);
   }
 
   public static void setStatus(Log log, String text) {

@@ -153,6 +153,7 @@ public class KVMDirect {
 
     // Initialise log, as all system settings were copied.
     log = LogFactory.getLog(KVMDirect.class);
+    Gui.setLog();
 
     log.debug("Starting KVMDirect " + KVMDirect.class.getPackage().getImplementationVersion());
 
