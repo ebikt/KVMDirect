@@ -29,7 +29,7 @@ public class M4 extends ebik.kvm.module.JnlpKVM {
       " input[type=text]::-ms-clear { display: none; }\n" +
       "\n" +
       "</style>\n" +
-      "<link rel=\"stylesheet\" type=\"text/css\" href=\"dojoOverrides.css\" />\n";
+      "<link rel=\"stylesheet\" type=\"text/css\" href=\"";
 
   public boolean homePageMatches(Response resp) throws Exception {
     String loc = resp.getHeader("Location");
